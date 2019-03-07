@@ -26,11 +26,12 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape_db";
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // GET route for Scaping Website
-app.get("/scrape", function(req, res) {
-    axios.get("http://www.kotaku.com/").then(function(response) {
+app.get("/", function(req, res) {
+    axios.get("http://www.kotaku.com/")
+    .then(function(response) {
         var $ = cheerio.load(response.data);
 
-        $("article.post-item-frontpage").each(function(i, element) {
+        $("article.status-published").each(function (i, element) {
             // Scrape Required Information
             var result = {};
 
@@ -60,10 +61,11 @@ app.get("/scrape", function(req, res) {
             .catch(function(err) {
                 console.log(err);
             });
-        });
 
-        res.send("Scrape Complete!");
+        });
     });
+
+    res.send("Scrape complete!")
 });
 
 // Listener for PORT
