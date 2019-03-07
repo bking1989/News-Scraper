@@ -1,0 +1,77 @@
+// Dependencies
+var express = require("express");
+var mongoose = require("mongoose");
+var cheerio = require("cheerio");
+var axios = require("axios");
+
+// Establish our Database for Mongoose
+var db = require("./models");
+
+// Establish our Port
+var PORT = process.env.PORT || 8080;
+
+// Initialize Express
+var app = express();
+
+// Parse Requests as JSON Data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Declare our Public Folder
+app.use(express.static("./public"));
+
+// Connect to our Database via Mongoose
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape_db";
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+// GET route for Scaping Website
+app.get("/scrape", function(req, res) {
+    axios.get("http://www.kotaku.com/").then(function(response) {
+        // Empties our Collection
+        db.Article.remove({}, function(err) {
+            console.log(err);
+        });
+
+        var $ = cheerio.load(response.data);
+        
+        $("article.post-item-frontpage").each(function(i, element) {
+            // Scrape Required Information
+            var result = {};
+
+            result.title = $(this)
+            .children("header")
+            .children("h1.headline")
+            .children("a")
+            .text();
+
+            result.summary = $(this)
+            .children("div.item__content")
+            .children("div.excerpt")
+            .children("p")
+            .text();
+
+            result.articleURL = $(this)
+            .children("header")
+            .children("h1.headline")
+            .children("a")
+            .attr("href");
+
+            // Create Article for Database
+            db.Article.create(result)
+            .then(function(dbArticle) {
+                console.log(dbArticle);
+            })
+            .catch(function(err) {
+                console.log(err);
+            });
+        });
+
+        res.send("Scrape Complete!");
+    });
+});
+
+// Listener for PORT
+app.listen(PORT, function() {
+  console.log("App running on port " + PORT + "!");
+});
