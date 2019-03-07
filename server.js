@@ -28,20 +28,15 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 // GET route for Scaping Website
 app.get("/scrape", function(req, res) {
     axios.get("http://www.kotaku.com/").then(function(response) {
-        // Empties our Collection
-        db.Article.remove({}, function(err) {
-            console.log(err);
-        });
-
         var $ = cheerio.load(response.data);
-        
+
         $("article.post-item-frontpage").each(function(i, element) {
             // Scrape Required Information
             var result = {};
 
             result.title = $(this)
             .children("header")
-            .children("h1.headline")
+            .children("h1")
             .children("a")
             .text();
 
@@ -53,7 +48,7 @@ app.get("/scrape", function(req, res) {
 
             result.articleURL = $(this)
             .children("header")
-            .children("h1.headline")
+            .children("h1")
             .children("a")
             .attr("href");
 
