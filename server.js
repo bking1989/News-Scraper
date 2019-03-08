@@ -61,11 +61,14 @@ app.get("/", function(req, res) {
             .catch(function(err) {
                 console.log(err);
             });
-
+        });
+    })
+    .then(function() {
+        // Load Page After Scrape
+        db.Article.find({}).then(function (finalDB) {
+            res.json(finalDB);
         });
     });
-
-    res.send("Scrape complete!")
 });
 
 // Listener for PORT
