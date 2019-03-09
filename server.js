@@ -3,6 +3,7 @@ var express = require("express");
 var mongoose = require("mongoose");
 var cheerio = require("cheerio");
 var axios = require("axios");
+var exphbs = require("express-handlebars");
 
 // Establish our Database for Mongoose
 var db = require("./models");
@@ -20,19 +21,30 @@ app.use(express.json());
 // Declare our Public Folder
 app.use(express.static("./public"));
 
+// Set-up Handlebars
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 // Connect to our Database via Mongoose
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape_db";
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-// GET route for Scaping Website
+// GET route for app
 app.get("/", function(req, res) {
+    db.Article.find({})
+    .then(function(result) {
+        res.render("index", result);
+    });
+});
+
+// GET route for Scaping Website
+app.get("/scrape", function(req, res) {
     axios.get("https://css-tricks.com/")
     .then(function(response) {
         var $ = cheerio.load(response.data);
 
         let articles = $("#maincontent").find("div.articles-and-rail").find("div.articles").find("article.article-card").find("div.article-article");
-        let counter = 0;
 
         $(articles).each(function (i, element) {
             // Scrape Required Information
@@ -58,17 +70,10 @@ app.get("/", function(req, res) {
             // Create Article for Database
             db.Article.create(result)
             .then(function(dbArticle) {
-                console.log(dbArticle);
-                counter++
-                if(counter >= articles.length){       
-                    db.Article.find({}).then(function (finalDB) {
-                        res.json(finalDB);
-                    });
-                }
+                console.log("Scrape complete!");
             })
             .catch(function(err) {
                 console.log(err);
-                counter++
             });
         });
     })
