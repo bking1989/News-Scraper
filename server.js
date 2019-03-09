@@ -34,7 +34,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 app.get("/", function(req, res) {
     db.Article.find({})
     .then(function(result) {
-        res.render("index", result);
+        res.json(result);
+        // res.render("index", result);
     });
 });
 
@@ -69,14 +70,13 @@ app.get("/scrape", function(req, res) {
 
             // Create Article for Database
             db.Article.create(result)
-            .then(function(dbArticle) {
-                console.log("Scrape complete!");
-            })
             .catch(function(err) {
                 console.log(err);
             });
         });
-    })
+
+        res.send("Scrape complete!");
+    });
 });
 
 // Listener for PORT
