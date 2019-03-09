@@ -27,11 +27,11 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // GET route for Scaping Website
 app.get("/", function(req, res) {
-    axios.get("http://www.kotaku.com/")
+    axios.get("https://css-tricks.com/")
     .then(function(response) {
         var $ = cheerio.load(response.data);
 
-        let articles = $("section.main").find("article.postlist__item");
+        let articles = $("#maincontent").find("div.articles-and-rail").find("div.articles").find("article.article-card").find("div.article-article");
         let counter = 0;
 
         $(articles).each(function (i, element) {
@@ -39,21 +39,20 @@ app.get("/", function(req, res) {
             var result = {};
 
             result.title = $(this)
-            .children("header")
-            .children("h1")
-            .children("a")
-            .text() || "Placeholder Title";
+            .find("h2")
+            .find("a")
+            .text()
+            .replace(/(\r\n|\n|\r)/gm, "")
+            .trim();
 
             result.summary = $(this)
-            .children("div.item__content")
-            .children("div.excerpt")
-            .children("p")
+            .find("div.article-content")
+            .find("p")
             .text();
 
             result.articleURL = $(this)
-            .children("header")
-            .children("h1")
-            .children("a")
+            .find("h2")
+            .find("a")
             .attr("href");
 
             // Create Article for Database
@@ -73,12 +72,6 @@ app.get("/", function(req, res) {
             });
         });
     })
-    // .then(function() {
-    //     // Load Page After Scrape
-    //     db.Article.find({}).then(function (finalDB) {
-    //         res.json(finalDB);
-    //     });
-    // });
 });
 
 // Listener for PORT
