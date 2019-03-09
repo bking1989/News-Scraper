@@ -30,8 +30,9 @@ app.get("/", function(req, res) {
     axios.get("http://www.kotaku.com/")
     .then(function(response) {
         var $ = cheerio.load(response.data);
-
-        $("article.status-published").each(function (i, element) {
+        let articles = $("article.status-published")
+        let counter = 0;
+        articles.each(function (i, element) {
             // Scrape Required Information
             var result = {};
 
@@ -57,18 +58,25 @@ app.get("/", function(req, res) {
             db.Article.create(result)
             .then(function(dbArticle) {
                 console.log(dbArticle);
+                counter++
+                if(counter >= articles.length){       
+                    db.Article.find({}).then(function (finalDB) {
+                        res.json(finalDB);
+                    });
+                }
             })
             .catch(function(err) {
                 console.log(err);
+                counter++
             });
         });
     })
-    .then(function() {
-        // Load Page After Scrape
-        db.Article.find({}).then(function (finalDB) {
-            res.json(finalDB);
-        });
-    });
+    // .then(function() {
+    //     // Load Page After Scrape
+    //     db.Article.find({}).then(function (finalDB) {
+    //         res.json(finalDB);
+    //     });
+    // });
 });
 
 // Listener for PORT
