@@ -30,9 +30,11 @@ app.get("/", function(req, res) {
     axios.get("http://www.kotaku.com/")
     .then(function(response) {
         var $ = cheerio.load(response.data);
-        let articles = $("article.status-published")
+
+        let articles = $("section.main").find("article.postlist__item");
         let counter = 0;
-        articles.each(function (i, element) {
+
+        $(articles).each(function (i, element) {
             // Scrape Required Information
             var result = {};
 
@@ -40,7 +42,7 @@ app.get("/", function(req, res) {
             .children("header")
             .children("h1")
             .children("a")
-            .text();
+            .text() || "Placeholder Title";
 
             result.summary = $(this)
             .children("div.item__content")
