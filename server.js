@@ -45,7 +45,7 @@ app.get("/", function(req, res) {
     });
 });
 
-// GET route for Scaping Website
+// GET route for website scrape
 app.get("/scrape", function(req, res) {
     axios.get("https://css-tricks.com/")
     .then(function(response) {
@@ -82,6 +82,32 @@ app.get("/scrape", function(req, res) {
         });
 
         res.send("Scrape complete!");
+    });
+});
+
+// GET route for comments
+app.get("/:id", function(req, res) {
+    db.Article.findOne({ _id: req.params.id })
+    .populate("comment")
+    .then(function(results) {
+        res.json(results);
+    })
+    .catch(function(err) {
+        console.log(err);
+    });
+});
+
+// POST route for comments
+app.post("/:id", function(req, res) {
+    db.Comment.create(req.body)
+    .then(function(data) {
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { comment: data._id }, { new: true });
+    })
+    .then(function(response) {
+        res.json(response);
+    })
+    .catch(function(err) {
+        console.log(err);
     });
 });
 
