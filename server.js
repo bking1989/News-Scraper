@@ -34,8 +34,14 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 app.get("/", function(req, res) {
     db.Article.find({})
     .then(function(result) {
-        res.json(result);
-        // res.render("index", result);
+        var hbsObj = {
+            articles: result
+        };
+
+        res.render("index", hbsObj);
+    })
+    .catch(function(err) {
+        console.log(err);
     });
 });
 

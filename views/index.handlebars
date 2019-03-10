@@ -1,0 +1,32 @@
+<div class="container">
+    <br>
+    <div class="jumbotron bg-primary">
+        <h1 class="text-white">News Scraper</h1>
+        <p class="text-white">All the news fit to scrape!</p>
+        <button class="btn bg-white font-weight-bold float-right">Click to Update</button>
+    </div>
+    <div class="card p-3">
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center" style="width:25%;">Title</th>
+                    <th scope="col" class="text-center" style="width:50%;">Summary</th>
+                    <th scope="col" class="text-center" style="width:25%;">Article & Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each articles}}
+                <tr>
+                    <th>{{title}}</th>
+                    <td>{{summary}}</td>
+                    <td class="text-center">
+                        <a class="btn btn-primary btn-sm m-1" href="{{articleURL}}" target="_blank">Click to Read!</a>
+                        <a class="btn btn-primary btn-sm m-1" href="javascript:null(0);">Click to Comment!</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <br>
+</div>
