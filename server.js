@@ -89,8 +89,8 @@ app.get("/scrape", function(req, res) {
 app.get("/:id", function(req, res) {
     db.Article.findOne({ _id: req.params.id })
     .populate("comment")
-    .then(function(results) {
-        res.json(results);
+    .then(function(comment) {
+        res.json(comment);
     })
     .catch(function(err) {
         console.log(err);
