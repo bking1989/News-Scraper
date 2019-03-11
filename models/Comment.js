@@ -1,3 +1,4 @@
+// Dependencies
 var mongoose = require("mongoose");
 
 // Define our schema
@@ -13,6 +14,10 @@ var CommentSchema = new Schema({
         type: String,
         min: [5, "Please type a bigger comment!"],
         required: true
+    },
+    article: {
+        type: Schema.Types.ObjectId,
+        ref: "Article"
     }
 });
 

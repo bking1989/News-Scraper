@@ -86,22 +86,22 @@ app.get("/scrape", function(req, res) {
 });
 
 // GET route for comments
-app.get("/comments/:id", function(req, res) {
+app.get("/comments/:id", function (req, res) {
     db.Article.findOne({ _id: req.params.id })
-    .populate("comment")
-    .then(function(data) {
-        res.json(data);
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
+        .populate("comments")
+        .then(function (data) {
+            res.json(data);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
 });
 
 // POST route for comments
 app.post("/:id", function(req, res) {
     db.Comment.create(req.body)
     .then(function(data) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id }, { comment: data._id }, { new: true });
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: data._id }}, { new: true });
     })
     .then(function(response) {
         res.json(response);

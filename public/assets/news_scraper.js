@@ -15,12 +15,13 @@ $(document).on("click", ".articleComments", function() {
     })
     .then(function(data) {
         $("#commentHeader").text("Comments for " + data.title);
-        console.log(data);
 
-        if (data.comment) {
-            $("#commentsModalBody").empty();
-            let newRow = `<tr><th>${data.comment.commentName}</th><td>${data.comment.commentBody}</td></tr>`;
-            $("#commentsModalBody").append(newRow);
+        if (data.comments) {
+            data.comments.forEach(function(comment) {
+                let newRow = `<tr><th class="text-center;">${comment.commentName}</th><td>${comment.commentBody}</td></tr>`;
+
+                $("#commentsModalBody").prepend(newRow);
+            })
         }
     });
 });
@@ -35,7 +36,8 @@ $(document).on("click", ".commentSubmit", function() {
         url: "/" + articleID,
         data: {
             commentName: $("#nameField").val().trim(),
-            commentBody: $("#bodyField").val().trim()
+            commentBody: $("#bodyField").val().trim(),
+            article: articleID
         }
     })
     .then(function() {

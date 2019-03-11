@@ -19,10 +19,12 @@ var ArticleSchema = new Schema({
         required: true,
         unique: true
     },
-    comment: {
-        type: Schema.Types.ObjectId,
-        ref: "Comment"
-    }
+    comments: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Comment"
+        }
+    ]
 });
 
 // Create our Model
