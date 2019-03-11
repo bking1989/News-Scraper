@@ -32,7 +32,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // GET route for app
 app.get("/", function(req, res) {
-    db.Article.find({})
+    db.Article.find({}).sort({ dateCreated: 1 })
     .then(function(result) {
         var hbsObj = {
             articles: result
