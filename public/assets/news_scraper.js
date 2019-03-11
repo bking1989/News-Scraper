@@ -15,9 +15,13 @@ $(document).on("click", ".articleComments", function() {
     })
     .then(function(data) {
         $("#commentHeader").text("Comments for " + data.title);
+        console.log(data);
 
-        if(data.comment){
-        };
+        if (data.comment) {
+            $("#commentsModalBody").empty();
+            let newRow = `<tr><th>${data.comment.commentName}</th><td>${data.comment.commentBody}</td></tr>`;
+            $("#commentsModalBody").append(newRow);
+        }
     });
 });
 
