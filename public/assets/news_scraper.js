@@ -14,16 +14,33 @@ $(document).on("click", ".articleComments", function() {
         url: "/comments/" + articleID
     })
     .then(function(data) {
+        // Set title for modal
         $("#commentHeader").text("Comments for " + data.title);
 
+        // Fill with comments
         if (data.comments) {
+            $("#commentsModalBody").empty();
+
             data.comments.forEach(function(comment) {
-                let newRow = `<tr><th class="text-center;">${comment.commentName}</th><td>${comment.commentBody}</td></tr>`;
+                let newRow = `<tr data-rowid="${comment._id}"><th class="text-center">${comment.commentName}</th><td class="text-center">${comment.commentBody}</td><td class="text-center"><button class="btn btn-danger btn-sm deleteBtn" data-commentid="${comment._id}"><b>X</b></button></td></tr>`;
 
                 $("#commentsModalBody").prepend(newRow);
             })
         }
     });
+});
+
+// When you click the delete button
+$(document).on("click", ".deleteBtn", function() {
+    // Get the unique comment ID
+    var commentID = $(this).data("commentid");
+
+    $.ajax({
+        method: "DELETE",
+        url: "/comments/" + commentID
+    });
+
+    $(this).parent().parent().remove();
 });
 
 // When you click to submit a comment
@@ -33,7 +50,7 @@ $(document).on("click", ".commentSubmit", function() {
 
     $.ajax({
         method: "POST",
-        url: "/" + articleID,
+        url: "/comments/" + articleID,
         data: {
             commentName: $("#nameField").val().trim(),
             commentBody: $("#bodyField").val().trim(),
@@ -57,6 +74,6 @@ $(document).on("click", ".updateBtn", function() {
         method: "GET",
         url: "/scrape"
     }).then(function() {
-        setTimeout(function() {location.reload();}, 3000);
+        setTimeout(function() {location.reload();}, 2000);
     });
 });

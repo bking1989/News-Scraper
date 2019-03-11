@@ -98,16 +98,29 @@ app.get("/comments/:id", function (req, res) {
 });
 
 // POST route for comments
-app.post("/:id", function(req, res) {
+app.post("/comments/:id", function(req, res) {
     db.Comment.create(req.body)
     .then(function(data) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: data._id }}, { new: true });
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: data._id } }, { new: true });
     })
     .then(function(response) {
         res.json(response);
     })
     .catch(function(err) {
         console.log(err);
+    });
+});
+
+// DELETE route for deleting comments
+app.delete("/comments/:id", function(req, res) {
+    db.Comment.deleteOne({ _id: req.params.id })
+    .catch(function(err) {
+        console.log(err)
+    });
+
+    db.Article.findOneAndUpdate({ comments: req.params.id }, { $pull: { comments: req.params.id } })
+    .catch(function(err) {
+        console.log(err)
     });
 });
 
