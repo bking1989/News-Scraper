@@ -11,14 +11,12 @@ $(document).on("click", ".articleComments", function() {
 
     $.ajax({
         method: "GET",
-        url: "/" + articleID
+        url: "/comments/" + articleID
     })
     .then(function(data) {
         $("#commentHeader").text("Comments for " + data.title);
 
-        if(data.comment) {
-            $("#commentsModelBody").find("tr").find("th").text(data.comment.commentName);
-            $("#commentsModelBody").find("tr").find("td").text(data.comment.commentBody);
+        if(data.comment){
         };
     });
 });

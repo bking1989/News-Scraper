@@ -86,11 +86,11 @@ app.get("/scrape", function(req, res) {
 });
 
 // GET route for comments
-app.get("/:id", function(req, res) {
+app.get("/comments/:id", function(req, res) {
     db.Article.findOne({ _id: req.params.id })
     .populate("comment")
-    .then(function(comment) {
-        res.json(comment);
+    .then(function(data) {
+        res.json(data);
     })
     .catch(function(err) {
         console.log(err);
