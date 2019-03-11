@@ -4,7 +4,7 @@ News Scraper for UA Code Boot Camp Using MongoDB, Mongoose, and Cheerio
 ## Table of Contents
 - [Summary](#summary)
 - [How It Works](#how-it-works)
-    - [Express and Mongoose](#express-and-mongoose)
+    - [Express, Axios, and Mongoose](#express-axios-and-mongoose)
     - [Express (Again) and Handlebars](#express-again-and-handlebars)
 - [Live Build](#live-build)
 
